@@ -1,0 +1,101 @@
+
+<div class='row-fluid' ng-controller="LandingPageController"
+	style="margin-top: 30px;">
+
+	<div class="row">
+
+		<div class="col-md-2">
+			<div class="section-div">
+				<h4 class="section-header">Machine</h4>
+				<select ng-model="dataModel.selectedMachineId">
+					<option value="select" selected="selected">Select Machine
+					</option>
+					<option ng-repeat='machine in dataModel.machines'
+						value="{{machine.id}}">{{machine.name}}</option>
+
+				</select>
+
+				<button class="btn btn-primary  button-margin"
+					ng-click="getCategoryNames()">Show Categories</button>
+			</div>
+
+		</div>
+
+		<div class="col-md-2">
+			<div class="section-div">
+				<h4 class="section-header">Machine Category</h4>
+				<select ng-model="dataModel.selectedMachineCategoryId">
+					<option value="select" selected="selected">Select Machine
+						Cateory</option>
+					<option ng-repeat='machineCategory in dataModel.machineCategories'
+						value="{{machineCategory.id}}">{{machineCategory.name}}</option>
+
+				</select>
+
+				<button class="btn btn-primary  button-margin"
+					ng-click="getPartsListForMachineCategory()">Show Parts</button>
+			</div>
+
+		</div>
+
+
+
+		<div class="col-md-4">
+			<div class="section-div">
+				<h4 class="section-header">Select Parts</h4>
+				<div class="row">
+					<div class="col-md-4 col-headers ">Name</div>
+					<div class="col-md-4 col-headers ">Description</div>
+					<div class="col-md-4 col-headers ">Rate</div>
+				</div>
+				<div ng-repeat='part in dataModel.parts' class="row">
+					<div class="col-md-4">
+						<input type="checkbox" ng-model="part.checked" /><span>{{part.name}}</span>
+					</div>
+
+					<div class="col-md-4">{{part.description}}</div>
+
+					<div class="col-md-4">{{part.rate}}</div>
+				</div>
+				<button style="margin: 5px" class="btn btn-primary button-margin"
+					ng-click="showSelectedParts()">Show Selected Parts</button>
+			</div>
+		</div>
+
+
+
+		<div class="col-md-4">
+			<div class="section-div">
+				<h4 class="section-header">Selected Parts</h4>
+				<div class="row">
+					<div class="col-md-4 col-headers ">Name</div>
+					<div class="col-md-4 col-headers ">Description</div>
+					<div class="col-md-4 col-headers ">Rate</div>
+				</div>
+				<div ng-repeat='part in dataModel.selectedMachineParts' class="row">
+					<div class="col-md-4">
+						<input type="checkbox" ng-model="part.checked" /><span>{{part.name}}</span>
+					</div>
+
+					<div class="col-md-4">{{part.description}}</div>
+
+					<div class="col-md-4">{{part.rate}}</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<button style="margin: 5px" class="btn btn-danger button-margin"
+							ng-click="removeSelectedParts()">Remove Selected Parts</button>
+					</div>
+					<div class="col-md-6">
+						<button style="margin: 5px" class="btn btn-success button-margin"
+							ng-click="generatePdf()">Generate Pdf</button>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+
+
+	</div>
+</div>

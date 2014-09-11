@@ -1,0 +1,49 @@
+<b:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:b="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/security/
+       http://www.springframework.org/schema/security/spring-security-3.1.xsd
+        ">
+
+
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.test.pdfproject.controller" />
+	<mvc:default-servlet-handler/>
+	<mvc:annotation-driven/>
+
+	<b:bean id="conversionService"
+		class="org.springframework.context.support.ConversionServiceFactoryBean">
+		<b:property name="converters">
+			<b:list>
+				<!-- list of converters -->
+				<b:bean class="com.test.pdfproject.converter.MachineToComponentConverter" />
+				<b:bean class="com.test.pdfproject.converter.MachineCategoryToComponentConverter" />
+				<b:bean class="com.test.pdfproject.converter.PartsToComponentConverter" />
+				<b:bean class="com.test.pdfproject.converter.PdfGenerationUIToPdfGenerationServiceConverter" />
+			</b:list>
+		</b:property>
+	</b:bean>
+
+	<b:bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<b:property name="prefix">
+			<b:value>/WEB-INF/pages/</b:value>
+		</b:property>
+		<b:property name="suffix">
+			<b:value>.jsp</b:value>
+		</b:property>
+	</b:bean>
+
+
+
+
+</b:beans>
