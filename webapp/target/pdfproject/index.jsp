@@ -16,7 +16,7 @@
 <script type="text/javascript" src="./public/scripts/app.js"></script>
 <script type="text/javascript" src="./public/scripts/controllers.js"></script>
 <script type="text/javascript" src="./public/scripts/factories.js"></script>
-
+<script type="text/javascript" src="./public/scripts/interceptor.js"></script>
 <style>
 body {
 	font-size: 13px;
@@ -70,6 +70,19 @@ input[type="checkbox"] {
 	color: #449d44;
 	font-weight: normal;
 }
+
+#loading-div {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  right: 0px;
+  left: 0px;
+  background: rgb(245, 240, 240);
+  z-index: 200;
+  text-align: center;
+  font-size: 25px;
+  opacity:0.5;
+}
 </style>
 </head>
 <body>
@@ -79,6 +92,9 @@ input[type="checkbox"] {
 	</div>
 	<div ng-app="proto">
 		<div ng-view class="container-fluid"></div>
+		<div ng-show="showLoading" id="loading-div"><img src="./public/images/spinner.gif"/></div>
 	</div>
+	
+	
 </html>
 

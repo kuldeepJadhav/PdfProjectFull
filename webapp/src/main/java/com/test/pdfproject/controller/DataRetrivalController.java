@@ -4,6 +4,7 @@
 package com.test.pdfproject.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.test.pdfgenerator.pojo.ActualParts;
 import com.test.pdfgenerator.pojo.Machine;
 import com.test.pdfgenerator.pojo.MachineCategory;
 import com.test.pdfgenerator.pojo.PartType;
@@ -66,7 +68,7 @@ public class DataRetrivalController {
 	/**
 	 * @return list of {@link Component}
 	 * The method returns list of {@link Component} class which contains details
-	 * about Machines @see {@link MachineCategory} 
+	 * about MachineCategory @see {@link MachineCategory} 
 	 */
 	@RequestMapping(value="/getmachinecategorylist",method = RequestMethod.GET)
 	@ResponseBody
@@ -84,7 +86,7 @@ public class DataRetrivalController {
 	/**
 	 * @return list of {@link Component}
 	 * The method returns list of {@link Component} class which contains details
-	 * about Machines @see {@link MachineCategory} 
+	 * about parts @see {@link Parts} 
 	 */
 	@RequestMapping(value="/getpartslist",method = RequestMethod.GET)
 	@ResponseBody
@@ -109,16 +111,35 @@ public class DataRetrivalController {
 	 */
 	@RequestMapping(value="/generatePdf",method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String,String> generatePdf(@RequestBody PdfGenerationDetails pdfDetailsObj) {
+	public Map<String,Boolean> generatePdf(@RequestBody PdfGenerationDetails pdfDetailsObj) {
 		PdfDetailsObject pdfDetailsObject = conversionService.convert(pdfDetailsObj, PdfDetailsObject.class);
 		System.out.println(pdfDetailsObject.getMachineCategoryId());
 		System.out.println(pdfDetailsObject.getMachineId());
 		System.out.println(pdfDetailsObject.getSelectedPartIds().size());
-		pdfGeneratorService.generatePdf(pdfDetailsObject);
-		return null;
+		boolean generatePdf = pdfGeneratorService.generatePdf(pdfDetailsObject);
+		Map<String,Boolean> result = new HashMap<String, Boolean>();
+		result.put("result", generatePdf);
+		return result;
 	}
 	
-	
-	
+	/**
+	 * @return list of {@link Component}
+	 * The method returns list of {@link Component} class which contains details
+	 * about actual parts @see {@link ActualParts} 
+	 */
+	@RequestMapping(value="/getactualpartslist",method = RequestMethod.GET)
+	@ResponseBody
+	public List<Component> getActualPartsListByPartId( @RequestParam(value="partId") String partId) {
+		
+		List<ActualParts> listOfParts = pdfGeneratorService.getListOfActualPartsBasedOnPartIdAndPartType(partId, PartType.DISCOUNTED);
+		List<ActualParts> listOfNonDiscountedParts = pdfGeneratorService.getListOfActualPartsBasedOnPartIdAndPartType(partId, PartType.NONDISCOUNTED);
+		listOfParts.addAll(listOfNonDiscountedParts);
+		List<Component> componentList = new ArrayList<Component>();
+		for(ActualParts part :  listOfParts){
+			Component component = conversionService.convert(part, Component.class);
+			componentList.add(component);
+		}
+		return componentList; 
+	}
 
 }

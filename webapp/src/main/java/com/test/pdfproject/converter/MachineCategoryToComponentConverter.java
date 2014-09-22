@@ -5,13 +5,12 @@ package com.test.pdfproject.converter;
 
 import org.springframework.core.convert.converter.Converter;
 
-import com.test.pdfgenerator.pojo.Machine;
 import com.test.pdfgenerator.pojo.MachineCategory;
 import com.test.pdfproject.pojo.Component;
 
 /**
  * @author jadhavk
- * Converters {@link Machine} to {@link Component}
+ * Converters {@link MachineCategory} to {@link Component}
  */
 public class MachineCategoryToComponentConverter implements
 		Converter<MachineCategory, Component> {

@@ -45,15 +45,18 @@ angular.module('proto').controller('LandingPageController',
 			};
 			
 			$scope.showSelectedParts = function() {
-				$scope.dataModel.selectedMachineParts = [];
+				$scope.dataModel.selectedMachineParts = [];   
 				$scope.dataModel.totalCost = 0;
 	              for(var i=0;i<$scope.dataModel.parts.length;i++){
-	                    if($scope.dataModel.parts[i].checked){
-	                        var obj = angular.copy($scope.dataModel.parts[i]);
-	                        delete obj.checked;
-	                        $scope.dataModel.selectedMachineParts.push(obj);
-	                        $scope.dataModel.totalCost = $scope.dataModel.totalCost + obj.rate;
-	                    }
+	            	  for(var j=0;j<$scope.dataModel.parts[i].subComponenets.length;j++) {
+	            		  if($scope.dataModel.parts[i].subComponenets[j].checked){
+		                        var obj = angular.copy($scope.dataModel.parts[i].subComponenets[j]);
+		                        delete obj.checked;
+		                        $scope.dataModel.selectedMachineParts.push(obj);
+		                        $scope.dataModel.totalCost = $scope.dataModel.totalCost + obj.rate;
+		                    } 
+	            	  }
+	                    
 	              }
 			};
 			
@@ -84,13 +87,22 @@ angular.module('proto').controller('LandingPageController',
 				pdfDetailsObj.selectedPartIds = selectedPartIds;
 				var promise = dataFactory.generatePdf(pdfDetailsObj);
 				promise.then(function(data) {
-					
+					if(!angular.isUndefined(data) && data.result ) {
+						alert('Pdf generated successfully!!!!!!!!');
+					}
 				}, function(reason) {
 					window.console.log('Failure: ' + reason);
 					$scope.errorMessage = reason;
 				});
 				
 			};
+			
+			$scope.loadActualPartsForPart = function(partId) {
+				var collapseSectionFlag = "isCollapsed"+partId;
+				$scope[collapseSectionFlag] = true;
+			};
+			
+		
 			
 			function getSelectedPartsIds() {
 				var selectedPartIds = [];

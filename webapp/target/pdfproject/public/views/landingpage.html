@@ -7,7 +7,7 @@
 		<div class="col-md-2">
 			<div class="section-div">
 				<h4 class="section-header">Machine</h4>
-				<select ng-model="dataModel.selectedMachineId">
+				<select ng-model="dataModel.selectedMachineId" ng-change="getCategoryNames()">
 					<option value="select" selected="selected">Select Machine
 					</option>
 					<option ng-repeat='machine in dataModel.machines'
@@ -15,8 +15,8 @@
 
 				</select>
 
-				<button class="btn btn-primary  button-margin"
-					ng-click="getCategoryNames()">Show Categories</button>
+				<!-- <button class="btn btn-primary  button-margin"
+					ng-click="getCategoryNames()">Show Categories</button> -->
 			</div>
 
 		</div>
@@ -24,7 +24,7 @@
 		<div class="col-md-2">
 			<div class="section-div">
 				<h4 class="section-header">Machine Category</h4>
-				<select ng-model="dataModel.selectedMachineCategoryId">
+				<select ng-model="dataModel.selectedMachineCategoryId" ng-change="getPartsListForMachineCategory()">
 					<option value="select" selected="selected">Select Machine
 						Cateory</option>
 					<option ng-repeat='machineCategory in dataModel.machineCategories'
@@ -32,8 +32,8 @@
 
 				</select>
 
-				<button class="btn btn-primary  button-margin"
-					ng-click="getPartsListForMachineCategory()">Show Parts</button>
+				<!-- <button class="btn btn-primary  button-margin"
+					ng-click="getPartsListForMachineCategory()">Show Parts</button> -->
 			</div>
 
 		</div>
@@ -43,19 +43,34 @@
 		<div class="col-md-4">
 			<div class="section-div">
 				<h4 class="section-header">Select Parts</h4>
-				<div class="row">
-					<div class="col-md-4 col-headers ">Name</div>
-					<div class="col-md-4 col-headers ">Description</div>
-					<div class="col-md-4 col-headers ">Rate</div>
-				</div>
-				<div ng-repeat='part in dataModel.parts' class="row">
-					<div class="col-md-4">
-						<input type="checkbox" ng-model="part.checked" /><span>{{part.name}}</span>
+				<div  class="row">
+					<div class="col-md-12">			
+						<accordion close-others="oneAtATime">
+							<accordion-group heading="{{part.name}}" ng-repeat='part in dataModel.parts'>
+	      						<div class="row">
+									<div class="col-md-4 col-headers ">Name</div>
+									<div class="col-md-4 col-headers ">Description</div>
+									<div class="col-md-4 col-headers ">Rate</div>
+								</div>
+								<div class="row" ng-repeat='actualPart in part.subComponenets' style='font-size:11px'>
+									<div class="col-md-4"><input type="checkbox" ng-model="actualPart.checked" />{{actualPart.name}}</div>
+									<div class="col-md-4">{{actualPart.description}}</div>
+									<div class="col-md-4">{{actualPart.rate}}</div>
+								</div>
+	    					</accordion-group>
+						</accordion>
+					
+						<!-- <a href="#" ng-click='loadActualPartsForPart(part.id)'>{{part.name}}</a>
+						<div ng-show="isCollapsed{{part.id}}">
+							
+						</div> -->
 					</div>
+					
+					
 
-					<div class="col-md-4">{{part.description}}</div>
+					<!-- <div class="col-md-4">{{part.description}}</div>
 
-					<div class="col-md-4">{{part.rate}}</div>
+					<div class="col-md-4">{{part.rate}}</div> -->
 				</div>
 				<button style="margin: 5px" class="btn btn-primary button-margin"
 					ng-click="showSelectedParts()">Show Selected Parts</button>

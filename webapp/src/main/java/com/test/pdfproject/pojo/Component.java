@@ -1,5 +1,7 @@
 package com.test.pdfproject.pojo;
 
+import java.util.List;
+
 /**
  * 
  * @author jadhavk
@@ -20,6 +22,24 @@ public class Component {
 	
 	private String rate;
 	
+	private List<Component> subComponenets;
+	
+	
+	
+
+	/**
+	 * @return the subComponenets
+	 */
+	public List<Component> getSubComponenets() {
+		return subComponenets;
+	}
+
+	/**
+	 * @param subComponenets the subComponenets to set
+	 */
+	public void setSubComponenets(List<Component> subComponenets) {
+		this.subComponenets = subComponenets;
+	}
 
 	/**
 	 * @return the rate

@@ -33,6 +33,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Lists;
+import com.test.pdfgenerator.pojo.ActualParts;
 import com.test.pdfgenerator.pojo.Company;
 import com.test.pdfgenerator.pojo.Machine;
 import com.test.pdfgenerator.pojo.MachineCategory;
@@ -40,11 +41,11 @@ import com.test.pdfgenerator.pojo.PartType;
 import com.test.pdfgenerator.pojo.Parts;
 import com.test.pdfgenerator.pojo.PdfDataDetails;
 import com.test.pdfgenerator.pojo.PdfDetailsObject;
+import com.test.pdfgenerator.repositories.ActualPartsRepository;
 import com.test.pdfgenerator.repositories.CompanyRepository;
 import com.test.pdfgenerator.repositories.MachineCategoryRepository;
 import com.test.pdfgenerator.repositories.MachineRepository;
 import com.test.pdfgenerator.repositories.PartsRepository;
-
 
 /**
  * @author jadhavk
@@ -52,46 +53,63 @@ import com.test.pdfgenerator.repositories.PartsRepository;
  */
 @Service
 public class PdfGeneratorServiceImpl implements PdfGeneratorService {
-	
+
 	@Autowired
 	CompanyRepository companyRepo;
-	
+
 	@Autowired
 	MachineRepository machineRepo;
-	
+
 	@Autowired
 	MachineCategoryRepository machineCategoryRepo;
-	
+
 	@Autowired
 	PartsRepository partsRepo;
+	
+	@Autowired
+	ActualPartsRepository actualPartsRepo;
 
-	/* (non-Javadoc)
-	 * @see com.test.pdfgenerator.service.PdfGeneratorService#getCompanyDetailsByName(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.test.pdfgenerator.service.PdfGeneratorService#getCompanyDetailsByName
+	 * (java.lang.String)
 	 */
 	public Company getCompanyDetailsByName(String name) {
 		return companyRepo.findByName(name);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.test.pdfgenerator.service.PdfGeneratorService#getMachineList()
 	 */
 	public List<Machine> getMachineList() {
 		return machineRepo.findAll();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.test.pdfgenerator.service.PdfGeneratorService#getMachineCategoryListByMachineId(org.bson.types.ObjectId)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.test.pdfgenerator.service.PdfGeneratorService#
+	 * getMachineCategoryListByMachineId(org.bson.types.ObjectId)
 	 */
 	public List<MachineCategory> getMachineCategoryListByMachineId(
 			String machineId) {
 		ObjectId id = new ObjectId(machineId);
 		Machine machine = machineRepo.findOne(id);
-		List<MachineCategory> machineCategories = machine.getMachineCategories();
+		List<MachineCategory> machineCategories = machine
+				.getMachineCategories();
 		return machineCategories;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.test.pdfgenerator.service.PdfGeneratorService#getListOfPartsForCategoryBasedOnPartType(org.bson.types.ObjectId, com.test.pdfgenerator.pojo.PartType)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.test.pdfgenerator.service.PdfGeneratorService#
+	 * getListOfPartsForCategoryBasedOnPartType(org.bson.types.ObjectId,
+	 * com.test.pdfgenerator.pojo.PartType)
 	 */
 	public List<Parts> getListOfPartsForCategoryBasedOnPartType(
 			String categoryId, PartType partType) {
@@ -99,57 +117,66 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
 		MachineCategory machinecategory = machineCategoryRepo.findOne(id);
 		List<Parts> parts = machinecategory.getParts();
 		List<Parts> result = new ArrayList<Parts>();
-		for(Parts p : parts){
+		for (Parts p : parts) {
 			PartType type = p.getType();
-			if(partType == type){
+			if (partType == type) {
 				result.add(p);
 			}
 		}
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.test.pdfgenerator.service.PdfGeneratorService#generatePdf(PdfDetailsObject pdfDetailsObject)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.test.pdfgenerator.service.PdfGeneratorService#generatePdf(
+	 * PdfDetailsObject pdfDetailsObject)
 	 */
 	public boolean generatePdf(PdfDetailsObject pdfDetailsObject) {
-		try{
-			List<String> selectedPartIds = pdfDetailsObject.getSelectedPartIds();
+		try {
+			List<String> selectedPartIds = pdfDetailsObject
+					.getSelectedPartIds();
 			List<Parts> selectedParts = getSelectedParts(selectedPartIds);
-			
+
 			String machineCategoryId = pdfDetailsObject.getMachineCategoryId();
-			MachineCategory machineCategory = machineCategoryRepo.findOne(new ObjectId(machineCategoryId));
+			MachineCategory machineCategory = machineCategoryRepo
+					.findOne(new ObjectId(machineCategoryId));
 			machineCategory.setParts(selectedParts);
-			
+
 			String machineId = pdfDetailsObject.getMachineId();
 			Machine machine = machineRepo.findOne(new ObjectId(machineId));
 			List<MachineCategory> machineCatList = new ArrayList<MachineCategory>();
 			machineCatList.add(machineCategory);
 			machine.setMachineCategories(machineCatList);
-			
+
 			PdfDataDetails details = new PdfDataDetails();
 			Company company = getCompanyDetailsByName("Xyz Machine Works");
 			details.setCompany(company);
 			details.setMachine(machine);
-			
-			JAXBContext jaxbContext = JAXBContext.newInstance(PdfDataDetails.class);
-            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-            String fileName = "PDFDataDetails" + new SimpleDateFormat("yyyyMMddhhmm").format(new Date()) +".xml";
-            File xmlFilePath = new File("/Users/jadhavk/data/xmlfiles/"+fileName);
-            jaxbMarshaller.marshal(details, xmlFilePath);
-            generatePdfFileOnSystem("/Users/jadhavk/data/xmlfiles/"+fileName);
-		}catch(Exception e) {
+
+			JAXBContext jaxbContext = JAXBContext
+					.newInstance(PdfDataDetails.class);
+			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+			String fileName = "PDFXML_"
+					+ new SimpleDateFormat("yyyyMMddhhmm").format(new Date())
+					+ ".xml";
+			File xmlFilePath = new File("/Users/jadhavk/data/xmlfiles/"
+					+ fileName);
+			jaxbMarshaller.marshal(details, xmlFilePath);
+			generatePdfFileOnSystem("/Users/jadhavk/data/xmlfiles/" + fileName);
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
 		return true;
 	}
-	
-	private String generatePdfFileOnSystem(String xmlFilePath) throws Exception{
-		
+
+	private String generatePdfFileOnSystem(String xmlFilePath) throws Exception {
+
 		ClassPathResource cpr = new ClassPathResource("data2.xsl");
 		File xsltfile = cpr.getFile();
 		// the XML file from which we take the name
-		//ClassPathResource cpr1 = new ClassPathResource(xmlFilePath);
+		// ClassPathResource cpr1 = new ClassPathResource(xmlFilePath);
 		System.out.println("xmlFilePath is " + xmlFilePath);
 		File xmlFile = new File(xmlFilePath);
 		StreamSource source = new StreamSource(xmlFile);
@@ -161,62 +188,85 @@ public class PdfGeneratorServiceImpl implements PdfGeneratorService {
 		FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
 		// to store output
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-		
-		 String fileName = "/Users/jadhavk/data/xmlfiles/PDF" + new SimpleDateFormat("yyyyMMddhhmm'.txt'").format(new Date()) +".pdf";
+
+		String fileName = "/Users/jadhavk/data/xmlfiles/PDF_"
+				+ new SimpleDateFormat("yyyyMMddhhmm").format(new Date())
+				+ ".pdf";
 		FileOutputStream pdfFile = new FileOutputStream(fileName);
 
 		Transformer xslfoTransformer;
-		try
-		{
+		try {
 			TransformerFactory transfact = TransformerFactory.newInstance();
 			xslfoTransformer = transfact.newTransformer(transformSource);
-		        Fop fop;
-			try
-			{
-				fop = fopFactory.newFop
-					(MimeConstants.MIME_PDF, foUserAgent, outStream);
-				// Resulting SAX events (the generated FO) 
+			Fop fop;
+			try {
+				fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent,
+						outStream);
+				// Resulting SAX events (the generated FO)
 				// must be piped through to FOP
-		                Result res = new SAXResult(fop.getDefaultHandler());
-
+				Result res = new SAXResult(fop.getDefaultHandler());
 				// Start XSLT transformation and FOP processing
-				try
-				{
-				        // everything will happen here..
+				try {
+					// everything will happen here..
 					xslfoTransformer.transform(source, res);
 					// to write the content to out put stream
 					byte[] pdfBytes = outStream.toByteArray();
-					pdfFile.write(pdfBytes);     
-				}
-				catch (TransformerException e) {
+					pdfFile.write(pdfBytes);
+				} catch (TransformerException e) {
 					throw e;
 				}
-			}
-			catch (FOPException e) {
+			} catch (FOPException e) {
 				throw e;
 			}
-		}
-		catch (TransformerConfigurationException e)
-		{
+		} catch (TransformerConfigurationException e) {
+			throw e;
+		} catch (TransformerFactoryConfigurationError e) {
 			throw e;
 		}
-		catch (TransformerFactoryConfigurationError e)
-		{
-			throw e;
-		}
-		
+
 		return null;
 	}
-	
+
 	private List<Parts> getSelectedParts(List<String> selectedPartIds) {
+		//TODO : implementation has to be changed, because now we have sub-parts also
 		List<ObjectId> selectedPartObjectIds = new ArrayList<ObjectId>();
-		for(String id : selectedPartIds) {
+		List<Parts> parts1 = new ArrayList<Parts>();
+		for (String id : selectedPartIds) {
 			ObjectId objectId = new ObjectId(id);
 			selectedPartObjectIds.add(objectId);
 		}
-		Iterable<Parts> parts = partsRepo.findAll(selectedPartObjectIds);
-		List<Parts> selectedPartList = Lists.newArrayList(parts);
-		return selectedPartList;
+		Iterable<ActualParts> parts = actualPartsRepo.findAll(selectedPartObjectIds);
+		List<ActualParts> selectedPartList = Lists.newArrayList(parts);
+		for(ActualParts ap : selectedPartList) {
+			Parts p = new Parts();
+			p.setCost(ap.getCost());
+			p.setDescription(ap.getDescription());
+			p.setId(ap.getId());
+			p.setName(ap.getName());
+			p.setType(ap.getType());
+			parts1.add(p);
+		}
+		return parts1;
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.test.pdfgenerator.service.PdfGeneratorService#getListOfActualPartsBasedOnPartId(String partId, PartType partType)
+	 */
+	public List<ActualParts> getListOfActualPartsBasedOnPartIdAndPartType(String partId, PartType partType) {
+		ObjectId id = new ObjectId(partId);
+		Parts part = partsRepo.findOne(id);
+		List<ActualParts> actualParts = part.getActualParts();
+		List<ActualParts> result = new ArrayList<ActualParts>();
+		for (ActualParts p : actualParts) {
+			PartType type = p.getType();
+			if (partType == type) {
+				result.add(p);
+			}
+		}
+		return result;
 	}
 
 }

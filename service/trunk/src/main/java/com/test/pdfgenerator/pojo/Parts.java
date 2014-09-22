@@ -1,11 +1,14 @@
 package com.test.pdfgenerator.pojo;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -30,7 +33,24 @@ public class Parts {
 	
 	private String description = "This is test description";
 	
+	//@DBRef(lazy=true)
+	private List<ActualParts> actualParts;
 	
+
+	/**
+	 * @return the actualParts
+	 */
+	@XmlTransient
+	public List<ActualParts> getActualParts() {
+		return actualParts;
+	}
+
+	/**
+	 * @param actualParts the actualParts to set
+	 */
+	public void setActualParts(List<ActualParts> actualParts) {
+		this.actualParts = actualParts;
+	}
 
 	/**
 	 * @return the description

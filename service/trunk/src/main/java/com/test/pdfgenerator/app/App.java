@@ -8,12 +8,16 @@ import java.util.List;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.test.pdfgenerator.pojo.ActualParts;
 import com.test.pdfgenerator.pojo.Company;
 import com.test.pdfgenerator.pojo.Machine;
+import com.test.pdfgenerator.pojo.TestParts;
+import com.test.pdfgenerator.repositories.ActualPartsRepository;
 import com.test.pdfgenerator.repositories.CompanyRepository;
 import com.test.pdfgenerator.repositories.MachineCategoryRepository;
 import com.test.pdfgenerator.repositories.MachineRepository;
 import com.test.pdfgenerator.repositories.PartsRepository;
+import com.test.pdfgenerator.repositories.TestPartsRepository;
 
 /**
  * @author jadhavk
@@ -31,6 +35,8 @@ public class App {
 		MachineRepository machineRepo = ctx.getBean("machineRepository",MachineRepository.class);
 		PartsRepository partsRepo = ctx.getBean("partsRepository",PartsRepository.class);
 		MachineCategoryRepository machineCategoryRepo = ctx.getBean("machineCategoryRepository",MachineCategoryRepository.class);
+		TestPartsRepository testPartsRepo = ctx.getBean("testPartsRepository",TestPartsRepository.class);
+		ActualPartsRepository actualPartsRepo = ctx.getBean("actualPartsRepository",ActualPartsRepository.class);
 		
 		//Code to store entries in mongodb.....
 		
@@ -99,12 +105,16 @@ public class App {
 		
 		
 		
-		Machine machine = machineRepo.findByMachineName("Xyz Machine Works");
+		/*Machine machine = machineRepo.findByMachineName("Xyz Machine Works");
 		List<Machine> findAll = machineRepo.findAll();
 		List<Machine> machineNameIdList = machineRepo.findAll();
 		System.out.println(machine.getMachineName());
-		
-		
+		*/
+		ActualParts actualPart= actualPartsRepo.findByName("Part 12 - Part 2");
+		System.out.println("ActualPart :" +actualPart.getName() + "Actual Cost :"+actualPart.getCost());
+	    TestParts testPart=testPartsRepo.findByName("Part 12");
+	    System.out.println("TestPart :" + testPart.getName() );
+	    System.out.println("Actual Parts : " + testPart.getActualParts().size());
 	}
 
 }

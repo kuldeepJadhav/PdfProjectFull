@@ -20,12 +20,12 @@
 									<fo:table-cell width="200px" text-align="left">
 										<fo:block>
 											<fo:external-graphic
-												src="http://localhost:8080/public/images/Actions-clipboard-icon.png" />
+												src="http://localhost:8080/pdfproject/public/images/logo.jpg" />
 										</fo:block>
 									</fo:table-cell>
-									<fo:table-cell width="300px" text-align="left"
+									<fo:table-cell width="400px" text-align="left"
 										font-weight="normal" font-style="italic" color="#B8E65C"
-										font-size="40px" padding-top="20px">
+										font-size="40px" padding="50px 0px 10px 20px">
 										<fo:block>
 											<xsl:value-of select="company/company-name" />
 										</fo:block>
@@ -50,6 +50,10 @@
 										padding="10px" font-size="10px" color="#339966">
 										<fo:block>
 											<xsl:value-of select="company/company-info" />
+											
+										</fo:block>
+										<fo:block>
+											&#x260E; 933442111
 										</fo:block>
 									</fo:table-cell>
 								</fo:table-row>
@@ -62,12 +66,32 @@
 						<fo:block> Machine -Logo </fo:block> </fo:table-cell> <fo:table-cell text-align="left" 
 						font-weight="bold"> <fo:block> <xsl:value-of select="machine/machine-name" 
 						/> </fo:block> </fo:table-cell> </fo:table-row> </fo:table-body> </fo:table> 
-						</fo:block> -->
+					
+					
+					
+										</fo:block> -->
+					
+					<fo:block>
+						<fo:table margin-left="3px">
+							<fo:table-body>
+								<fo:table-row>
+									<fo:table-cell  width="400px" height="400px">
+										<fo:block>
+										<fo:external-graphic width="90%" height="90%"  
+												src="http://localhost:8080/pdfproject/public/images/machine.jpg" />
+										</fo:block>	
+									</fo:table-cell>
+								</fo:table-row>
+							</fo:table-body>
+						</fo:table>
+					</fo:block>			
+					
+					
 					<fo:block-container width="150px" margin-top="20px"
 						margin-bottom="1px" text-align="center" margin-left="3px" padding="5px"
 						background-color="#336699" color="white">
 						<fo:block>
-							About The Machine
+							About The Machine/Machine Category
 						</fo:block>
 					</fo:block-container>
 					<fo:block>
@@ -82,16 +106,29 @@
 											<fo:block>
 												<xsl:value-of select="machine/machine-name" />
 											</fo:block>
-											<fo:block>
-												<xsl:value-of select="machine/machine-category/machine-category-name" />
-											</fo:block>
-											<fo:block>
-												<xsl:value-of select="machine/machine-category/machine-category-description" />
-											</fo:block>
 										</fo:block-container>
 										<fo:block-container line-height="1.5">
 											<fo:block>
 												<xsl:value-of select="machine/machine-info" />
+											</fo:block>
+										</fo:block-container>
+									</fo:table-cell>
+								</fo:table-row>
+								<fo:table-row>
+									<fo:table-cell background-color="#D6EBFF"
+										text-align="left" font-weight="normal" padding="10px"
+										font-size="10px" color="#339966">
+										<fo:block-container line-height="1.5"
+											padding="2px" font-size="13px" font-weight="bold">
+											
+											<fo:block>
+												<xsl:value-of select="machine/machine-category/machine-category-name" />
+											</fo:block>
+											
+										</fo:block-container>
+										<fo:block-container line-height="1.5">
+											<fo:block>
+												<xsl:value-of select="machine/machine-category/machine-category-description" />
 											</fo:block>
 										</fo:block-container>
 									</fo:table-cell>
@@ -114,6 +151,8 @@
 						<fo:table background-color="white" margin-top="0px">
 							<fo:table-body>
 								<fo:table-row>
+								
+								
 									<fo:table-cell color="white" text-align="center"
 										margin-top="0px">
 										<fo:block-container margin-left="3px"
@@ -191,7 +230,7 @@
 													padding-left="5px" margin="3px" height="40px"
 													background-color="#F0FFC2">
 													<fo:block>
-														<xsl:value-of select="name" />
+														 <xsl:value-of select="name" />
 													</fo:block>
 												</fo:block-container>
 											</fo:table-cell>

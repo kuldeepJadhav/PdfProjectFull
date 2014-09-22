@@ -57,7 +57,7 @@ angular.module('proto').factory('dataFactory', function($http, $q) {
 				url : 'pdfproject/generatePdf',
 				data : angular.toJson(pdfDetailsObj)
 			}).success(function(data) {
-				
+				deferred.resolve(data);
 			}).error(function(data, status, headers, config) {
 				deferred.reject('Error generating pdf');
 			});

@@ -5,6 +5,7 @@ package com.test.pdfgenerator.service;
 
 import java.util.List;
 
+import com.test.pdfgenerator.pojo.ActualParts;
 import com.test.pdfgenerator.pojo.Company;
 import com.test.pdfgenerator.pojo.Machine;
 import com.test.pdfgenerator.pojo.MachineCategory;
@@ -71,4 +72,16 @@ public interface PdfGeneratorService {
 	 * </p>
 	 */
 	public boolean generatePdf(PdfDetailsObject pdfDetailsObject) ;
+	
+	/**
+	 * 
+	 * @param partId
+	 * @param partType
+	 * @return list of {@link ActualParts}
+	 * <br><br>
+	 * <p>
+	 * returns list of actual parts for the part selected by the user
+	 * </p>
+	 */
+	public List<ActualParts> getListOfActualPartsBasedOnPartIdAndPartType(String partId, PartType partType);
 }
